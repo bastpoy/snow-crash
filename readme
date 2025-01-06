@@ -1,7 +1,8 @@
-Project of cybersecurity with 15 exercices to learn some concepts of cybersecurity:
+Project with 15 exercices to learn some concepts of cybersecurity:
 decoding/ decrypting password 
 reading pcap file
 understand an executable by reading it assembly code.
 privilege escalation
+i dont resolve everything for the moment
 
 SPOIL : see the command file to understand how I resolve each exercices.
