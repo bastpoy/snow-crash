@@ -2,6 +2,7 @@ find with certain permission:
 - find / -user flag00 2>/dev/null : files that are owned by user flag00 || -perm -u=rw => permet de trier par execution.
 - sudo -i => ouvrir une session root
 - scp -P 4243 level00@127.0.0.1:/usr/sbin/john . => copy the john file in my actual directory
+- >> /path/to/logfile 2>&1 => redirect standard output and error into the file
 
 =======================
 level02 => pcap reading file. need to read the data of each packet with wireshark.
@@ -99,4 +100,31 @@ So i have a server that is running
 
 =================================
 level05
+- I have a file with the permission flag05 named openarenaserver
+- The permission are: -rwxr-x---+ 1 flag05 flag05 94 Mar  5  2016 /usr/sbin/openarenaserver => the + defines ACL: access control lists that extend the permission of a file
+	- To see the other permissions I can use: getfacl <filename> that give me this output:
+	- # file: usr/sbin/openarenaserver
+	# owner: flag05
+	# group: flag05
+	user::rwx
+	user:level05:r--
+	group::r-x
+	mask::r-x
+	other::---
+	- I can also set the ACL with: setfacl -m u:bernard:rw- test => set the read and write permission to the user bernard on the file test
+- This script launch all the scirpt in a certain directory with the fag05 permission
+- I have another thing when i log to my account I have this print: "You have new mail." => this message mean that there is a message in another directory. It located at /var/spool/mail
+- The file contains: */2 * * * * su -c "sh /usr/sbin/openarenaserver" - flag05 => which is a crontab that launch the script every two minutes
+- The content of the script:
+	#!/bin/sh
 
+	for i in /opt/openarenaserver/* ; do
+		(ulimit -t 5; bash -x "$i")
+		rm -f "$i"
+	done
+- But i try to put a script in /opt/openarenaserver that print a message but it doesnt print but delete it. When i execute the script manually it print the mesage and delete it.
+- It looks like with the crontab execution that it dont print anything , or dont execute anything on this repository. I think the output of crontab is redirected
+- Ok I success. 
+- The goal when i know that i can execute a script was to simply put a script with getflag and get the result. But in my previous test the output wasn't display. so I redirect the file like that:
+	- echo $(getflag) >> /tmp/test 2>&1 => the last experession redirect standard input and error in the specified file
+ 
