@@ -127,4 +127,16 @@ level05
 - Ok I success. 
 - The goal when i know that i can execute a script was to simply put a script with getflag and get the result. But in my previous test the output wasn't display. so I redirect the file like that:
 	- echo $(getflag) >> /tmp/test 2>&1 => the last experession redirect standard input and error in the specified file
- 
+
+===================================
+level06
+
+- I have a php script file and an executable.
+- The script is modifying the text passing in output
+- The executable is like the executable of the script
+- There is a vulnerabilitie inside the script: preg_replace("/(\[x (.*)\])/e", "y(\"\\2\")", $a)
+		- This line evaluate match pattern like php code. 
+		- The match pattern is [x ], so what i put between the space and ] can be execute because /e treat this as a code and will execute it.
+- Inside the pattern I put a command that will be execut: [x {${system(getflag)}}] => inside a file that I will pass as an argument
+- The second parameter is unnecessary
+
