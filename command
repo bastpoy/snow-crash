@@ -14,11 +14,19 @@ level03 : strings <filename> => show only the caracters inside a file
 assembly functions 
 
 - push <value>: add an operande (value) to the stack
-- mov <target> <source> : add value2 to target
+- mov <target> <source> : add source to target
 - and <target> <mask> : and binary, put the result inside target
+- lea <target> <source> : load effective address, put the address of source inside target
+
 - sub <target> <value> : substract target with the value and store it inside target
 - ebp => base pointer in assembly, all the other pointer are above it
 - ebp will be the base pointer and esp will be at the max allcoate memory of the current function or space.
+
+if i have a function: foo(1,2)
+	- rdi => 1
+	- rsi => 2
+the return value of a functions come inside rax
+
 mov     eax, [esp+18h]  ; Load group ID
 mov     [esp+8], eax    ; Parameter 3
 mov     eax, [esp+18h]  ; Load group ID again
@@ -34,6 +42,7 @@ mov [esp+4], eax        ; Store same value at offset 4
 mov eax, [esp+18h]      ; Load same value again from offset 24
 mov [esp], eax          ; Store same value at offset 0
 
+dword means : double world
 
 I just have to create  a script that launch getflag and  have the name echo and change the env PATH
 
@@ -139,4 +148,17 @@ level06
 		- The match pattern is [x ], so what i put between the space and ] can be execute because /e treat this as a code and will execute it.
 - Inside the pattern I put a command that will be execut: [x {${system(getflag)}}] => inside a file that I will pass as an argument
 - The second parameter is unnecessary
+
+==================================
+level07
+
+- I have an executable file. The executable was launching an environnement variable inside.
+	- it was HOSTNAME=level07 
+	- I just rename it HOSTNAME= '($getflag)'
+- That's it
+
+
+==================================
+level08
+
 
