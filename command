@@ -164,6 +164,7 @@ assembly explanation
 - mov <target> <source> : add source to target
 - and <target> <mask> : and binary, put the result inside target
 - lea <target> <source> : load effective address, put the address of source inside target
+- jle 
 
 - sub <target> <value> : substract target with the value and store it inside target
 - ebp => base pointer in assembly, all the other pointer are above it
@@ -202,3 +203,18 @@ call my_function
 - mov eax, [ebx] 	; Move the 4 bytes in memory at the address contained in EBX into EAX
 - mov [var], ebx 	; Move the contents of EBX into the 4 bytes at memory address var. (Note, var is a 32-bit constant).
 - Subroutine parameters are passed on the stack. Registers are saved on the stack, and local variables used by subroutines are placed in memory on the stack.
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <errno.h>
+
+int main(int argc, char *argv[])
+{
+        printf("%s\n", getenv("LD_PRELOAD"));
+        if(open("/etc/ld.so.preload", 0) < 0)
+        {
+                printf("error opening %s\n", strerror(errno));
+        }
+        return (0);
+}
