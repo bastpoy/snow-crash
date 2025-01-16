@@ -3,48 +3,30 @@ find with certain permission:
 - sudo -i => ouvrir une session root
 - scp -P 4243 level00@127.0.0.1:/usr/sbin/john . => copy the john file in my actual directory
 - >> /path/to/logfile 2>&1 => redirect standard output and error into the file
+========================
+level01
 
-=======================
+- Use john the ripper to retrieve a password encrypt in the /etc/passw
+- Fpr the leve01 there is password encrypted int the /etc/passwd => flag01:42hDRfypTqqnw:3001:3001::/home/flag/flag01:/bin/bash
+- there is two file on linux: the /etc/passwd and the /etc/shadow. 
+	- The /etc/passwd contain information about users
+	- The /etc/shadow contains keys to encrypt the password of every users
+- The goal now is too cobine this two file to use john the ripper
+- first file passwd contains : flag01:x:3001:3001::/home/flag/flag00:/bin/bash
+- second file shadow contains: flag01:42hDRfypTqqnw:3001:3001::/home/flag/flag01:/bin/bash
+- Combine this two files to have this command : unshadow passwd shadow > output.db
+- And then use john : john --show output.db 
+
+========================
 level02 => pcap reading file. need to read the data of each packet with wireshark.
 	right click on the packet inside wireshark => follow => TCP stream it gives me all the data from the conversation.
 
 ========================
 level03 : strings <filename> => show only the caracters inside a file
 	- objdump -d -Mintel level03 => dissasemble a binary file
-assembly functions 
 
-- push <value>: add an operande (value) to the stack
-- mov <target> <source> : add source to target
-- and <target> <mask> : and binary, put the result inside target
-- lea <target> <source> : load effective address, put the address of source inside target
+- I just have to create  a script that launch getflag and  have the name echo and change the env PATH
 
-- sub <target> <value> : substract target with the value and store it inside target
-- ebp => base pointer in assembly, all the other pointer are above it
-- ebp will be the base pointer and esp will be at the max allcoate memory of the current function or space.
-
-if i have a function: foo(1,2)
-	- rdi => 1
-	- rsi => 2
-the return value of a functions come inside rax
-
-mov     eax, [esp+18h]  ; Load group ID
-mov     [esp+8], eax    ; Parameter 3
-mov     eax, [esp+18h]  ; Load group ID again
-mov     [esp+4], eax    ; Parameter 2
-mov     eax, [esp+18h]  ; Load group ID once more
-mov     [esp], eax      ; Parameter 1
-
-mov [esp+1Ch], eax      ; Store value at offset 28 (0x1C)
-mov eax, [esp+18h]      ; Load value from offset 24 (0x18)
-mov [esp+8], eax        ; Store same value at offset 8
-mov eax, [esp+18h]      ; Load same value again from offset 24
-mov [esp+4], eax        ; Store same value at offset 4
-mov eax, [esp+18h]      ; Load same value again from offset 24
-mov [esp], eax          ; Store same value at offset 0
-
-dword means : double world
-
-I just have to create  a script that launch getflag and  have the name echo and change the env PATH
 
 ======================
 level04 : the goal was to elevated my privilege with a script perl:
@@ -161,4 +143,62 @@ level07
 ==================================
 level08
 
+- I have a binary and a file to read name level08 and token
+- The binary is doing an strstr of token that prevent from reading a token file
+- But my goal is to read it so i have to do an symbolic link to another file
+- But initially i wa doing ln -s token /tmp/test and ./level08 /tmp/test 
+	- the problem was that i dont give the fulle path of token so he dont know where it is
+- The symbolink must look like that: ln -s /home/user/level08/token /tmp/test
+	- So I have the full path of the token.
 
+==================================
+level09
+
+- Same principle as the previous exercice
+
+
+=================================
+assembly explanation
+
+- push <value>: add an operande (value) to the stack
+- mov <target> <source> : add source to target
+- and <target> <mask> : and binary, put the result inside target
+- lea <target> <source> : load effective address, put the address of source inside target
+
+- sub <target> <value> : substract target with the value and store it inside target
+- ebp => base pointer in assembly, all the other pointer are above it
+- ebp will be the base pointer and esp will be at the max allcoate memory of the current function or space.
+
+if i have a function: foo(1,2)
+	- rdi => 1
+	- rsi => 2
+the return value of a functions come inside rax
+
+mov     eax, [esp+18h]  ; Load group ID
+mov     [esp+8], eax    ; Parameter 3
+mov     eax, [esp+18h]  ; Load group ID again
+mov     [esp+4], eax    ; Parameter 2
+mov     eax, [esp+18h]  ; Load group ID once more
+mov     [esp], eax      ; Parameter 1
+
+mov [esp+1Ch], eax      ; Store value at offset 28 (0x1C)
+mov eax, [esp+18h]      ; Load value from offset 24 (0x18)
+mov [esp+8], eax        ; Store same value at offset 8
+mov eax, [esp+18h]      ; Load same value again from offset 24
+mov [esp+4], eax        ; Store same value at offset 4
+mov eax, [esp+18h]      ; Load same value again from offset 24
+mov [esp], eax          ; Store same value at offset 0
+
+- dword means : double world
+	- A word is 16 bits, 2 bytes => so dword is 4bytes in x86
+
+mov dword ptr [esp+4], 0
+mov dword ptr [esp+8], 42
+call my_function
+
+- For example this code is preparing the stack for the call of my_function: esp+4 will be the first argument and esp+8 will be the second 
+	- In that case I use a cdecl convention where are called by the stack
+	- fastcall conventions call arguments by register
+- mov eax, [ebx] 	; Move the 4 bytes in memory at the address contained in EBX into EAX
+- mov [var], ebx 	; Move the contents of EBX into the 4 bytes at memory address var. (Note, var is a 32-bit constant).
+- Subroutine parameters are passed on the stack. Registers are saved on the stack, and local variables used by subroutines are placed in memory on the stack.
