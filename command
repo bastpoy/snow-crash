@@ -155,8 +155,21 @@ level08
 level09
 
 - Same principle as the previous exercice
-
-
+- I have an executable that read the LD_PRELOAD env variable.
+- I think that i have to charge a library at this environnement variable. It will be execute alongside the executable.
+	- This library will overwrite a function and instead of process the actual function, it will process mine.
+	- The goal is to read the content of my token file
+	- so maybe i need to overwrite ths function
+- I try to create a .so file and add it to LD_PRELOAD and launch it with my binaries, but it does anything
+- I try to understand the assembly file but it veery difficult.
+	- I dont understand the esp + 2Ch instruction?
+	- I dont udnerstand the aftersubstr function
+	- I dont understand the islib function
+- I try to launch the ida debugger but it not working
+	- Problem with breakpoints : I cant see the content of variables 
+- to compile a .so library => gcc -shared -fPIC malicious_malloc.c -o malicious_malloc.so -ldl
+- a bit sad. because it was not about exploiting the binary file but just finding what it does
+- I cat the token file and instead of adding the ascii value with the index i substract it that's all
 =================================
 assembly explanation
 
@@ -197,24 +210,11 @@ mov dword ptr [esp+4], 0
 mov dword ptr [esp+8], 42
 call my_function
 
+test eax eax => test si eax = 0
+
 - For example this code is preparing the stack for the call of my_function: esp+4 will be the first argument and esp+8 will be the second 
 	- In that case I use a cdecl convention where are called by the stack
 	- fastcall conventions call arguments by register
 - mov eax, [ebx] 	; Move the 4 bytes in memory at the address contained in EBX into EAX
 - mov [var], ebx 	; Move the contents of EBX into the 4 bytes at memory address var. (Note, var is a 32-bit constant).
 - Subroutine parameters are passed on the stack. Registers are saved on the stack, and local variables used by subroutines are placed in memory on the stack.
-
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <errno.h>
-
-int main(int argc, char *argv[])
-{
-        printf("%s\n", getenv("LD_PRELOAD"));
-        if(open("/etc/ld.so.preload", 0) < 0)
-        {
-                printf("error opening %s\n", strerror(errno));
-        }
-        return (0);
-}
